@@ -16,14 +16,14 @@ $error = $_GET['error'] ?? '';
         <h3>Iniciar Sesión</h3>
 
         <?php if ($error == 'credenciales'): ?>
-            <p style="color: red; font-size: 14px;">DNI o contraseña incorrectos.</p>
+            <p style="color: red; font-size: 14px;">Correo o contraseña incorrectos.</p>
         <?php elseif ($error == 'vacios'): ?>
             <p style="color: red; font-size: 14px;">Completá todos los campos.</p>
         <?php endif; ?>
 
         <form action="verificar_login.php" method="POST">
-            <p style="text-align: left; margin-bottom: 5px;">DNI:</p>
-            <input type="text" name="dni" required style="width: 90%; padding: 8px; border-radius: 10px; border: 1px solid #ccc;"><br><br>
+            <p style="text-align: left; margin-bottom: 5px;">Correo electrónico:</p>
+            <input type="email" name="email" required style="width: 90%; padding: 8px; border-radius: 10px; border: 1px solid #ccc;"><br><br>
 
             <p style="text-align: left; margin-bottom: 5px;">Contraseña:</p>
             <input type="password" name="password" required style="width: 90%; padding: 8px; border-radius: 10px; border: 1px solid #ccc;"><br><br>

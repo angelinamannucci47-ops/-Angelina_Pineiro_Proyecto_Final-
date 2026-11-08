@@ -3,16 +3,17 @@ session_start();
 require_once "conexion.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $dni = trim($_POST["dni"] ?? "");
+    $email = trim($_POST["email"] ?? ""); 
     $password = $_POST["password"] ?? "";
 
-    if (empty($dni) || empty($password)) {
+    if (empty($email) || empty($password)) {
         header("Location: login.php?error=vacios");
         exit;
     }
 
-    $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE dni = ? AND fecha_archivado IS NULL");
-    $stmt->execute([$dni]);
+  
+    $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE email = ? AND fecha_archivado IS NULL");
+    $stmt->execute([$email]);
     $usuario = $stmt->fetch();
 
     if ($usuario && password_verify($password, $usuario["password_hash"])) {
@@ -23,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION["email"] = $usuario["email"];
         $_SESSION["rol"] = $usuario["rol"];
 
-        // Redirigir a la gestión de turnos
+      
         header("Location: turnos.php");
         exit;
     } else {

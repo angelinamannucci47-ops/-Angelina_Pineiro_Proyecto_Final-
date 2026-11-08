@@ -1,34 +1,6 @@
 <?php
-require_once "conexion.php";
-$error = "";
-$exito = "";
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nombre = trim($_POST["nombre"] ?? "");
-    $apellido = trim($_POST["apellido"] ?? "");
-    $dni = trim($_POST["dni"] ?? "");
-    $email = trim($_POST["email"] ?? "");
-    $password = $_POST["password"] ?? "";
-
-    if (empty($nombre) || empty($apellido) || empty($dni) || empty($email) || empty($password)) {
-        $error = "Todos los campos son obligatorios.";
-    } else {
-        // Verificar duplicados de DNI o email
-        $stmt = $conexion->prepare("SELECT id FROM usuarios WHERE dni = ? OR email = ?");
-        $stmt->execute([$dni, $email]);
-        if ($stmt->fetch()) {
-            $error = "El DNI o el correo electrónico ya se encuentran registrados.";
-        } else {
-            $password_hash = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $conexion->prepare("INSERT INTO usuarios (nombre, apellido, dni, email, password_hash, rol) VALUES (?, ?, ?, ?, ?, 'cliente')");
-            if ($stmt->execute([$nombre, $apellido, $dni, $email, $password_hash])) {
-                $exito = "¡Cuenta creada con éxito! Ya podés iniciar sesión.";
-            } else {
-                $error = "Ocurrió un error al registrar el usuario.";
-            }
-        }
-    }
-}
+session_start();
+$error = $_GET['error'] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -41,16 +13,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <br><br>
     <div id="caja" style="width: 380px; padding: 20px;">
         <h2>Lucy Skin & Care</h2>
-        <h3>Registro de Cuenta</h3>
+        <h3>Crear Cuenta</h3>
 
-        <?php if (!empty($error)): ?>
-            <p style="color: red; font-size: 14px;"><?= htmlspecialchars($error) ?></p>
-        <?php endif; ?>
-        <?php if (!empty($exito)): ?>
-            <p style="color: green; font-size: 14px;"><?= htmlspecialchars($exito) ?></p>
+        <?php if ($error == 'vacios'): ?>
+            <p style="color: red; font-size: 14px;">Completá todos los campos obligatorios.</p>
+        <?php elseif ($error == 'duplicado'): ?>
+            <p style="color: red; font-size: 14px;">El DNI o el correo ya están registrados.</p>
+        <?php elseif ($error == 'error'): ?>
+            <p style="color: red; font-size: 14px;">Hubo un error al registrarte. Intentá de nuevo.</p>
         <?php endif; ?>
 
-        <form method="POST">
+        <form action="guardar_registro.php" method="POST">
             <p style="text-align: left; margin-bottom: 3px;">Nombre:</p>
             <input type="text" name="nombre" required style="width: 90%; padding: 6px; border-radius: 8px; border: 1px solid #ccc;"><br>
 
@@ -60,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <p style="text-align: left; margin-bottom: 3px;">DNI:</p>
             <input type="text" name="dni" required style="width: 90%; padding: 6px; border-radius: 8px; border: 1px solid #ccc;"><br>
 
-            <p style="text-align: left; margin-bottom: 3px;">Correo Electrónico:</p>
+            <p style="text-align: left; margin-bottom: 3px;">Correo electrónico:</p>
             <input type="email" name="email" required style="width: 90%; padding: 6px; border-radius: 8px; border: 1px solid #ccc;"><br>
 
             <p style="text-align: left; margin-bottom: 3px;">Contraseña:</p>
@@ -70,6 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
 
         <p><a href="login.php" style="color: #8f5951; text-decoration: none;">¿Ya tenés cuenta? Iniciá sesión</a></p>
+        <p><a href="index.php" style="color: #666; font-size: 14px; text-decoration: none;">Volver al inicio</a></p>
     </div>
     <footer>Creadora: Angelina Piñeiro 4B</footer>
 </body>
