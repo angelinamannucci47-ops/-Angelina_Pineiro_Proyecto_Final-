@@ -14,7 +14,6 @@ $servicio = "";
 $fecha = "";
 $hora = "";
 
-// 1. Si viene un ID, cargamos los datos del turno para editar
 if ($id != "") {
     $stmt = $conexion->prepare("SELECT * FROM turnos WHERE id = ?");
     $stmt->execute([$id]);
@@ -28,7 +27,6 @@ if ($id != "") {
     }
 }
 
-// 2. Guardar o actualizar al enviar el formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id = $_POST["id"];
     $nombre = trim($_POST["nombre"]);
@@ -37,11 +35,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $hora = $_POST["hora"];
 
     if ($id == "") {
-        // Insertar nuevo turno
+       
         $stmt = $conexion->prepare("INSERT INTO turnos (nombre, servicio, fecha, hora) VALUES (?, ?, ?, ?)");
         $stmt->execute([$nombre, $servicio, $fecha, $hora]);
     } else {
-        // Actualizar turno existente
+       
         $stmt = $conexion->prepare("UPDATE turnos SET nombre = ?, servicio = ?, fecha = ?, hora = ? WHERE id = ?");
         $stmt->execute([$nombre, $servicio, $fecha, $hora, $id]);
     }

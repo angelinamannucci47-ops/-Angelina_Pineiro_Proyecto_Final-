@@ -9,7 +9,6 @@ try {
     $password = password_hash("Estetica123!", PASSWORD_DEFAULT);
     $rol = "admin";
 
-    // Verificar si ya existe
     $sql = "SELECT id FROM usuarios WHERE dni = ?";
     $consulta = $conexion->prepare($sql);
     $consulta->execute([$dni]);

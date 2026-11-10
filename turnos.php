@@ -8,7 +8,7 @@ if (!isset($_SESSION["id"])) {
 
 require_once "conexion.php";
 
-// Traer la lista de turnos
+
 $stmt = $conexion->query("SELECT * FROM turnos ORDER BY fecha ASC, hora ASC");
 $turnos = $stmt->fetchAll();
 ?>

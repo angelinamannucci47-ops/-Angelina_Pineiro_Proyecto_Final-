@@ -14,7 +14,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     try {
-        // Verificar si ya existe el DNI o el Email en la base de datos
         $sqlCheck = "SELECT id FROM usuarios WHERE dni = ? OR email = ?";
         $stmtCheck = $conexion->prepare($sqlCheck);
         $stmtCheck->execute([$dni, $email]);
@@ -24,11 +23,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit;
         }
 
-        // Cifrar la contraseña de forma segura
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
         $rol = "cliente"; // Rol por defecto
 
-        // Guardar el usuario nuevo
         $sqlInsert = "INSERT INTO usuarios (nombre, apellido, dni, email, password_hash, rol) VALUES (?, ?, ?, ?, ?, ?)";
         $stmtInsert = $conexion->prepare($sqlInsert);
         $stmtInsert->execute([$nombre, $apellido, $dni, $email, $password_hash, $rol]);

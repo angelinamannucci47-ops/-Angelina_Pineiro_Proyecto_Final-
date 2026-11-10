@@ -7,19 +7,6 @@ if (!isset($_SESSION["id"]) || $_SESSION["rol"] !== 'admin') {
     exit;
 }
 
-$busqueda = trim($_GET["busqueda"] ?? "");
-
-if ($busqueda !== "") {
-    $sql = "SELECT * FROM usuarios WHERE fecha_archivado IS NULL AND (nombre LIKE ? OR apellido LIKE ? OR dni LIKE ? OR email LIKE ?)";
-    $stmt = $conexion->prepare($sql);
-    $param = "%$busqueda%";
-    $stmt->execute([$param, $param, $param, $param]);
-} else {
-    $sql = "SELECT * FROM usuarios WHERE fecha_archivado IS NULL";
-    $stmt = $conexion->query($sql);
-}
-$usuarios = $stmt->fetchAll();
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -60,23 +47,6 @@ $usuarios = $stmt->fetchAll();
                 <th>Rol</th>
                 <th>Acciones</th>
             </tr>
-            <?php if (count($usuarios) > 0): ?>
-                <?php foreach ($usuarios as $u): ?>
-                <tr>
-                    <td><?= $u["id"] ?></td>
-                    <td><?= htmlspecialchars($u["nombre"] . " " . $u["apellido"]) ?></td>
-                    <td><?= htmlspecialchars($u["dni"]) ?></td>
-                    <td><?= htmlspecialchars($u["email"]) ?></td>
-                    <td><?= htmlspecialchars($u["rol"]) ?></td>
-                    <td>
-                        <a href="editar_usuario.php?id=<?= $u["id"] ?>" style="color: blue;">Editar</a> | 
-                        <a href="archivar_usuario.php?id=<?= $u["id"] ?>" onclick="return confirm('¿Seguro que deseas archivar este usuario?');" style="color: darkred;">Archivar</a>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <tr><td colspan="6" style="text-align:center;">No se encontraron usuarios activos.</td></tr>
-            <?php endif; ?>
         </table>
     </div>
     <footer>Creadora: Angelina Piñeiro 4B</footer>
